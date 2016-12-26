@@ -26,13 +26,15 @@ hdiutil.attach('image.dmg', function(error) {
 }, {
   // password dialog title (if needed)
   prompt: "Enter the password",
-  // password that will be automatically passed
+  // password that will be automatically passed to stdin (in case if omitted standard dialog will be shown)
   password: "...",
-  // read-only mount
+  // how many times to repeat authorization attempts (default = 0)
+  repeat: 5,
+  // read-only mount (default = false)
   readonly: true,
-  // hide it from user
+  // hide it from user (default = false)
   nobrowse: true,
-  // auto open in Finder
+  // auto open in Finder (default = false)
   autoopen: true
 });
 ```
