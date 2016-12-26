@@ -51,7 +51,13 @@ function getInfoForAttachedImage(imagePath, ret) {
 
 		if (!error) try {
 			result = plist.parse(result);
-			result = result.images.filter(image => image['image-path'] === imagePath)[0];
+			if (
+				(result = result.images.filter(image => image['image-path'] === imagePath)[0]) &&
+				(result = result['system-entities'].filter(entity => entity.hasOwnProperty('mount-point'))[0])
+			) result = {
+				device: result['dev-entry'],
+				mount: result['mount-point']
+			};
 		}
 
 		catch (exception) {
@@ -162,14 +168,14 @@ function detach(imagePath, ret, force) {
 	getInfoForAttachedImage(imagePath, function(error, attachedImageInfo) {
 		if (error) return ret(error);
 		if (!attachedImageInfo) return ret(null);
-		var args = ['detach', attachedImageInfo['system-entities'][0]['dev-entry']];
+		var args = ['detach', attachedImageInfo.device];
 		if (force) args.push('-force');
 		execFile('/usr/bin/hdiutil', args, ret);
 	});
 }
 
 module.exports = {
-	getInfoForAttachedImage: getInfoForAttachedImage,
+	info: getInfoForAttachedImage,
 	attach: attach,
 	detach: detach
 };
