@@ -1,6 +1,6 @@
 {
 	"name": "hdiutil",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "OSX hdiutil api for Node.js",
 	"main": "index.js",
 	"keywords": [

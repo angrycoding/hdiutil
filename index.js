@@ -1,7 +1,7 @@
 var path = require('path'),
 	plist = require('plist'),
 	execFile = require('child_process').execFile,
-	authorize = require('./build/Release/hdiutil.node');
+	authorize = require('./build/Release/hdiutil.node').authorize;
 
 function forAsync(iterator, begin, end, step) {
 
