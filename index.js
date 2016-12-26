@@ -42,6 +42,8 @@ function requestPassword(prompt, ret) {
 }
 
 function getInfoForAttachedImage(imagePath, ret) {
+	if (typeof imagePath !== 'string') imagePath = String(imagePath);
+	if (typeof ret !== 'function') ret = function(){};
 	execFile('/usr/bin/hdiutil', [
 		'info',
 		'-plist'
@@ -78,6 +80,8 @@ function isEncrypted(imagePath, ret) {
 }
 
 function attach(imagePath, ret, options) {
+	if (typeof imagePath !== 'string') imagePath = String(imagePath);
+	if (typeof ret !== 'function') ret = function(){};
 	getInfoForAttachedImage(imagePath, function(error, result) {
 		if (error) return ret(error);
 		if (result) return ret(null, result);
@@ -153,6 +157,8 @@ function attach(imagePath, ret, options) {
 }
 
 function detach(imagePath, ret, force) {
+	if (typeof imagePath !== 'string') imagePath = String(imagePath);
+	if (typeof ret !== 'function') ret = function(){};
 	getInfoForAttachedImage(imagePath, function(error, attachedImageInfo) {
 		if (error) return ret(error);
 		if (!attachedImageInfo) return ret(null);
