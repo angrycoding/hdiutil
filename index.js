@@ -52,6 +52,7 @@ function info(imagePath, ret) {
 		result = plist.parse(result).images.filter(image => image['image-path'] === imagePath)[0];
 		if (!result) return ret(null);
 		result = result['system-entities'].filter(entity => entity.hasOwnProperty('mount-point'))[0];
+		if (!result) return ret(null);
 		ret(null, result['mount-point'], result['dev-entry']);
 	});
 }
