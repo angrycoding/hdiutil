@@ -1,4 +1,4 @@
-# hdiutil [![npm version](https://badge.fury.io/js/hdiutil)](https://npmjs.org/package/hdiutil)
+# hdiutil [![npm version](https://badge.fury.io/js/hdiutil.svg)](https://npmjs.org/package/hdiutil)
 
 Provides limited set of OSX hdiutil api for Node.js
 
