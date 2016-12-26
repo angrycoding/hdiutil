@@ -41,31 +41,18 @@ function requestPassword(prompt, ret) {
 	authorize(prompt, ret);
 }
 
-function getInfoForAttachedImage(imagePath, ret) {
+function info(imagePath, ret) {
 	if (typeof imagePath !== 'string') imagePath = String(imagePath);
 	if (typeof ret !== 'function') ret = function(){};
 	execFile('/usr/bin/hdiutil', [
 		'info',
 		'-plist'
 	], function(error, result) {
-
-		if (!error) try {
-			result = plist.parse(result);
-			if (
-				(result = result.images.filter(image => image['image-path'] === imagePath)[0]) &&
-				(result = result['system-entities'].filter(entity => entity.hasOwnProperty('mount-point'))[0])
-			) result = {
-				device: result['dev-entry'],
-				mount: result['mount-point']
-			};
-		}
-
-		catch (exception) {
-			error = exception;
-		}
-
-		ret(error, result);
-
+		if (error) return ret(error);
+		result = plist.parse(result).images.filter(image => image['image-path'] === imagePath)[0];
+		if (!result) return ret(null);
+		result = result['system-entities'].filter(entity => entity.hasOwnProperty('mount-point'))[0];
+		ret(null, result['mount-point'], result['dev-entry']);
 	});
 }
 
@@ -88,9 +75,9 @@ function isEncrypted(imagePath, ret) {
 function attach(imagePath, ret, options) {
 	if (typeof imagePath !== 'string') imagePath = String(imagePath);
 	if (typeof ret !== 'function') ret = function(){};
-	getInfoForAttachedImage(imagePath, function(error, result) {
+	info(imagePath, function(error, mountPath, devicePath) {
 		if (error) return ret(error);
-		if (result) return ret(null, result);
+		if (mountPath) return ret(null);
 		isEncrypted(imagePath, function(error, encrypted) {
 			if (error) return ret(error);
 
@@ -123,10 +110,7 @@ function attach(imagePath, ret, options) {
 					if (repeatTimes > repeat.iteration && errorMsg.indexOf('Authentication error') !== -1)
 						return repeat();
 
-					if (!error) try { result = plist.parse(result); }
-					catch (exception) { error = exception; }
-
-					ret(error, result);
+					if (error) ret(error); else ret(null);
 
 				});
 
@@ -165,17 +149,17 @@ function attach(imagePath, ret, options) {
 function detach(imagePath, ret, force) {
 	if (typeof imagePath !== 'string') imagePath = String(imagePath);
 	if (typeof ret !== 'function') ret = function(){};
-	getInfoForAttachedImage(imagePath, function(error, attachedImageInfo) {
+	info(imagePath, function(error, mountPath, devicePath) {
 		if (error) return ret(error);
-		if (!attachedImageInfo) return ret(null);
-		var args = ['detach', attachedImageInfo.device];
+		if (!devicePath) return ret(null);
+		var args = ['detach', devicePath];
 		if (force) args.push('-force');
 		execFile('/usr/bin/hdiutil', args, ret);
 	});
 }
 
 module.exports = {
-	info: getInfoForAttachedImage,
+	info: info,
 	attach: attach,
 	detach: detach
 };
