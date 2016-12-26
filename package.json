@@ -1,0 +1,25 @@
+{
+	"name": "hdiutil",
+	"version": "0.0.1",
+	"description": "OSX hdiutil api for Node.js",
+	"main": "index.js",
+	"keywords": [
+		"Finder",
+		"MacOS",
+		"OSX",
+		"Mac",
+		"hdiutil",
+		"Electron",
+		"dmg",
+		"iso",
+		"SFAuthorization",
+		"Security"
+	],
+	"author": "Ruslan Matveev",
+	"license": "MIT",
+	"repository": "https://github.com/angrycoding/hdiutil",
+	"dependencies": {
+		"nan": "^2.4.0",
+		"plist": "^2.0.1"
+	}
+}
